@@ -35,6 +35,19 @@ func main() {
 
 		if isMonotonic(record) && isSafeDiff(record) {
 			safe += 1
+			continue
+		}
+
+		for i := 0; i < len(record); i++ {
+			removal := append([]int{}, record[:i]...)
+			if i != len(record)-1 {
+				removal = append(removal, record[i+1:]...)
+			}
+			if isMonotonic(removal) && isSafeDiff(removal) {
+				safe++
+				break
+			}
+
 		}
 
 	}
