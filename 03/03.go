@@ -22,9 +22,10 @@ func main() {
 
 	sum := 0
 	i := 0
+	do := true
 
 	for i < len(input) {
-		if input[i] == 'm' && i+5 < len(input) && input[i:i+4] == "mul(" {
+		if i+4 < len(input) && input[i:i+4] == "mul(" && do {
 			i += 4
 			startX := i
 
@@ -57,6 +58,12 @@ func main() {
 
 		}
 		i++
+		if i+4 < len(input) && input[i:i+4] == "do()" {
+			do = true
+		}
+		if i+7 < len(input) && input[i:i+7] == "don't()" {
+			do = false
+		}
 	}
 	fmt.Println(sum)
 }
