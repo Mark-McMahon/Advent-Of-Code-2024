@@ -28,6 +28,53 @@ func main() {
 		}
 	}
 
+	result1 := part1(matrix)
+	fmt.Println(result1)
+
+	result2 := part2(matrix)
+	fmt.Println(result2)
+
+}
+
+func part2(matrix [][]rune) int {
+
+	ROWS := len(matrix)
+	COLS := len(matrix[0])
+
+	totalCount := 0
+	for r := 0; r < ROWS-1; r++ { // we can avoid edges here :)
+		for c := 0; c < COLS-1; c++ {
+			if matrix[r][c] == 'A' {
+				if dfspart2(r, c, matrix) {
+					totalCount++
+				}
+			}
+		}
+	}
+
+	return totalCount
+
+}
+
+func dfspart2(r int, c int, matrix [][]rune) bool {
+
+	if r-1 < 0 || r+1 >= len(matrix) || c-1 < 0 || c+1 >= len(matrix[0]) {
+		return false
+	}
+
+	topLeft := matrix[r-1][c-1]
+	bottomRight := matrix[r+1][c+1]
+	topRight := matrix[r-1][c+1]
+	bottomLeft := matrix[r+1][c-1]
+
+	diag1Valid := (topLeft == 'M' && bottomRight == 'S') || (topLeft == 'S' && bottomRight == 'M')
+	diag2Valid := (topRight == 'M' && bottomLeft == 'S') || (topRight == 'S' && bottomLeft == 'M')
+
+	return diag1Valid && diag2Valid
+}
+
+func part1(matrix [][]rune) int {
+
 	ROWS := len(matrix)
 	COLS := len(matrix[0])
 
@@ -48,7 +95,7 @@ func main() {
 	for r := 0; r < ROWS; r++ {
 		for c := 0; c < COLS; c++ {
 			for _, d := range directions {
-				if dfs(r, c, word, matrix, d) {
+				if dfspart1(r, c, word, matrix, d) {
 					totalCount++
 				}
 			}
@@ -56,10 +103,10 @@ func main() {
 		}
 	}
 
-	fmt.Println(totalCount)
+	return totalCount
 }
 
-func dfs(r int, c int, word string, matrix [][]rune, d [2]int) bool {
+func dfspart1(r int, c int, word string, matrix [][]rune, d [2]int) bool {
 	for i := 0; i < len(word); i++ {
 		dr := r + d[0]*i
 		dc := c + d[1]*i
