@@ -45,29 +45,44 @@ func part1(matrix [][]rune) int {
 		{0, -1}, //left
 	}
 
-	visited := make(map[[2]int]bool)
+	cycles := 0
 
-	dfs(matrix, x, y, 0, visited, directions)
+	for i := range matrix {
+		for j := range matrix[i] {
+			if (i == x && j == y) || matrix[i][j] == '#' {
+				continue
+			}
+			matrix[i][j] = '#'
+			visited := make(map[[3]int]bool)
+			if dfs(matrix, x, y, 0, visited, directions) {
+				cycles++
+			}
+			matrix[i][j] = '.'
+		}
+	}
 
-	return len(visited)
+	return cycles
 
 }
 
-func dfs(matrix [][]rune, r, c, dirIndex int, visited map[[2]int]bool, d [][2]int) {
+func dfs(matrix [][]rune, r, c, dirIndex int, visited map[[3]int]bool, d [][2]int) bool {
 	if r < 0 || c < 0 || r >= len(matrix) || c >= len(matrix[0]) {
-		return
+		return false
+	}
+	if visited[[3]int{r, c, dirIndex}] {
+		return true
 	}
 
-	visited[[2]int{r, c}] = true
+	visited[[3]int{r, c, dirIndex}] = true
 
 	dr := r + d[dirIndex][0]
 	dc := c + d[dirIndex][1]
 
 	if dr >= 0 && dr < len(matrix) && dc >= 0 && dc < len(matrix[0]) && matrix[dr][dc] == '#' {
 		dirIndex = (dirIndex + 1) % 4
-		dfs(matrix, r, c, dirIndex, visited, d)
+		return dfs(matrix, r, c, dirIndex, visited, d)
 	} else {
-		dfs(matrix, dr, dc, dirIndex, visited, d)
+		return dfs(matrix, dr, dc, dirIndex, visited, d)
 	}
 
 }
